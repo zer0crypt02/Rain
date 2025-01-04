@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(0deg, #232323 0%, #3c3c3c 100%);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .rain {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .drop {
+            position: absolute;
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(transparent, rgba(255,255,255,0.7));
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-120px);
+            }
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+
+        .lamp-post {
+            position: absolute;
+            bottom: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .pole {
+            width: 12px;
+            height: 220px;
+            background: linear-gradient(90deg, #292929, #404040, #292929);
+            margin: 0 auto;
+            position: relative;
+            border-radius: 6px;
+            box-shadow: -2px 0px 4px rgba(0,0,0,0.3);
+        }
+
+        .light {
+            width: 80px;
+            height: 40px;
+            background: linear-gradient(90deg, #292929, #404040, #292929);
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 15px 15px 5px 5px;
+            box-shadow: 0px -2px 4px rgba(0,0,0,0.3);
+        }
+
+        .light::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 15px;
+            background: #333;
+            border-radius: 5px;
+        }
+
+        .bulb {
+            width: 50px;
+            height: 50px;
+            background: #ffd700;
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 60px #ffd700,
+                0 0 100px #ffd700,
+                0 0 150px #ffd700;
+            animation: flicker 5s infinite;
+        }
+
+        .light-beam {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 400px;
+            background: linear-gradient(to bottom, rgba(255,215,0,0.2), transparent);
+            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 1; }
+            92% { opacity: 1; }
+            93% { opacity: 0.8; }
+            94% { opacity: 1; }
+            98% { opacity: 0.9; }
+            100% { opacity: 1; }
+        }
+
+        .puddle {
+            position: absolute;
+            bottom: 28%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 30px;
+            background: radial-gradient(ellipse at center, rgba(102,102,102,0.6) 0%, rgba(102,102,102,0) 70%);
+            border-radius: 50%;
+            filter: blur(3px);
+        }
+
+        .lightning {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0);
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes flash {
+            0% { background: rgba(255,255,255,0); }
+            10% { background: rgba(255,255,255,0.6); }
+            11% { background: rgba(255,255,255,0); }
+            14% { background: rgba(255,255,255,0.6); }
+            15% { background: rgba(255,255,255,0); }
+            100% { background: rgba(255,255,255,0); }
+        }
+
+        .ornament {
+            position: absolute;
+            width: 20px;
+            height: 3px;
+            background: #333;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="lightning" id="lightning"></div>
+        <div class="rain" id="rain"></div>
+        <div class="lamp-post">
+            <div class="light">
+                <div class="bulb"></div>
+            </div>
+            <div class="light-beam"></div>
+            <div class="pole">
+                <!-- Direk süslemeleri -->
+                <div class="ornament" style="top: 30%;"></div>
+                <div class="ornament" style="top: 60%;"></div>
+                <div class="ornament" style="top: 90%;"></div>
+            </div>
+        </div>
+        <div class="puddle"></div>
+    </div>
+
+    <script>
+        function createRain() {
+            const rain = document.getElementById('rain');
+            const drops = 200;
+
+            for (let i = 0; i < drops; i++) {
+                const drop = document.createElement('div');
+                drop.className = 'drop';
+                drop.style.left = Math.random() * 100 + '%';
+                drop.style.animationDuration = 0.5 + Math.random() * 0.5 + 's';
+                drop.style.opacity = Math.random() * 0.4 + 0.4;
+                rain.appendChild(drop);
+            }
+        }
+
+        function createLightning() {
+            const lightning = document.getElementById('lightning');
+            
+            function flash() {
+                lightning.style.animation = 'flash 2s';
+                setTimeout(() => {
+                    lightning.style.animation = 'none';
+                    // Rastgele bir süre sonra tekrar şimşek çakacak
+                    setTimeout(flash, Math.random() * 10000 + 5000);
+                }, 2000);
+            }
+            
+            // İlk şimşeği başlat
+            setTimeout(flash, Math.random() * 5000);
+        }
+
+        createRain();
+        createLightning();
+    </script>
+</body>
+</html>
